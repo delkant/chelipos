@@ -1,0 +1,104 @@
+entity OpenTicket {
+    name String required,
+    tax Double required,
+    total Double required,
+    totalWithTax Double required,
+    discount Double required,
+    totalToPay Double required
+}
+
+entity Tax {
+    name String required,
+    taxPercentage Integer required
+}
+
+entity TableSeat {
+    name String required
+}
+
+entity Store {
+    name String required,
+    address String required
+}
+
+entity Customer {
+    name String required,
+    firstName String,
+    lastName String,
+    taxID String,
+    birthday LocalDate
+}
+
+enum DiscountType {
+    PERCENTAGE, AMOUNT
+}
+
+entity Discount {
+    detail String required,
+    expiration LocalDate required,
+    type DiscountType required,
+    amount Double,
+    percentage Integer max(100)
+}
+
+entity Facility {
+    name String required
+}
+
+entity FacilityType {
+    name String required
+}
+
+/*
+Item i.e.: Pizza
+*/
+entity Item {
+    name String required
+}
+
+enum BaseUnit {
+    GR, ML, UN
+}
+
+/*
+stock i.e.: { item:Pizza, qty:3, unit: GR, component: pepperoni }
+*/
+entity InventoryDiscount {
+    qty Double required,
+    unit BaseUnit required,
+}
+
+/*
+stock i.e.: {qty:300, unit: GR, component: pepperoni }
+*/
+entity InventoryTotal {
+    qty Double required,
+    unit BaseUnit required,
+}
+
+/*
+ItemComponent i.e.: pepperoni
+*/
+entity ItemComponent {
+    name String required
+}
+
+relationship ManyToOne {
+  OpenTicket{store(name)} to Store,
+  OpenTicket{tax(name)} to Tax,
+  OpenTicket{table(name)} to TableSeat,
+  OpenTicket{customer(name)} to Customer,
+  OpenTicket{discount(detail)} to Discount,
+  Facility{type(name)} to FacilityType,
+  TableSeat{facility(name)} to Facility,
+  InventoryDiscount{item(name)} to Item,
+  InventoryDiscount{component(name)} to ItemComponent,
+  InventoryTotal{component(name)} to ItemComponent,
+  Discount{customer(name)} to Customer
+}
+
+relationship ManyToMany {
+    OpenTicket{item(name)} to Item,
+    Item{itemComponent(name)} to ItemComponent{item(name)}
+}
+
