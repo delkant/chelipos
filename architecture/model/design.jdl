@@ -111,10 +111,10 @@ entity ItemStatusName {
 
 relationship ManyToOne {
   Ticket{store(name)} to Store,
-  Ticket{tax(name)} to Tax,
+  Ticket{taxDetail(name)} to Tax,
   Ticket{table(name)} to TableSeat,
   Ticket{customer(name)} to Customer,
-  Ticket{discount(detail)} to Discount,
+  Ticket{discountDetail(detail)} to Discount,
   Facility{type(name)} to FacilityType,
   TableSeat{facility(name)} to Facility,
   InventoryDiscount{item(name)} to Item,
@@ -123,7 +123,7 @@ relationship ManyToOne {
   Discount{customer(name)} to Customer,
   ItemTicket{item(name)} to Item,
   ItemTicketStatus{item(name)} to ItemStatusName,
-  ItemTicket{item(name)} to ItemTicketStatus
+  ItemTicket{status(name)} to ItemTicketStatus
 }
 
 relationship ManyToMany {
