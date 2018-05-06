@@ -1,10 +1,12 @@
-entity OpenTicket {
+entity Ticket {
     name String required,
     tax Double required,
     total Double required,
     totalWithTax Double required,
     discount Double required,
-    totalToPay Double required
+    totalToPay Double required,
+    opentime ZonedDateTime,
+    closedtime ZonedDateTime
 }
 
 entity Tax {
@@ -53,7 +55,10 @@ entity FacilityType {
 Item i.e.: Pizza
 */
 entity Item {
-    name String required
+    name String required,
+    price Double required,
+    cost Double required,
+    deliveryTimeSeconds Integer
 }
 
 enum BaseUnit {
@@ -80,25 +85,50 @@ entity InventoryTotal {
 ItemComponent i.e.: pepperoni
 */
 entity ItemComponent {
+    name String required,
+    price Double required,
+    cost Double required
+}
+
+/*
+ItemComponent i.e.: pepperoni
+*/
+entity ItemTicket {
+    name String required,
+    comment String
+}
+
+entity ItemTicketStatus {
+    name String required,
+    start ZonedDateTime,
+    end ZonedDateTime
+}
+
+entity ItemStatusName {
     name String required
 }
 
+
 relationship ManyToOne {
-  OpenTicket{store(name)} to Store,
-  OpenTicket{tax(name)} to Tax,
-  OpenTicket{table(name)} to TableSeat,
-  OpenTicket{customer(name)} to Customer,
-  OpenTicket{discount(detail)} to Discount,
+  Ticket{store(name)} to Store,
+  Ticket{tax(name)} to Tax,
+  Ticket{table(name)} to TableSeat,
+  Ticket{customer(name)} to Customer,
+  Ticket{discount(detail)} to Discount,
   Facility{type(name)} to FacilityType,
   TableSeat{facility(name)} to Facility,
   InventoryDiscount{item(name)} to Item,
   InventoryDiscount{component(name)} to ItemComponent,
   InventoryTotal{component(name)} to ItemComponent,
-  Discount{customer(name)} to Customer
+  Discount{customer(name)} to Customer,
+  ItemTicket{item(name)} to Item,
+  ItemTicketStatus{item(name)} to ItemStatusName,
+  ItemTicket{item(name)} to ItemTicketStatus
 }
 
 relationship ManyToMany {
-    OpenTicket{item(name)} to Item,
-    Item{itemComponent(name)} to ItemComponent{item(name)}
+    Ticket{item(name)} to Item,
+    Item{itemComponent(name)} to ItemComponent{item(name)},
+    ItemTicket{extra(name)} to ItemComponent{ticketExtra(name)}
 }
 
